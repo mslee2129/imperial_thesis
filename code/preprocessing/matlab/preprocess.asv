@@ -1,0 +1,40 @@
+sampling_rate = 128;
+
+[ALLEEG EEG CURRENTSET ALLCOM] = eeglab;
+for i = 1:1
+    % Form the file paths with the updated integer
+    files = {};
+    newFiles = {};
+    for j = 2:5
+        prepPath = sprintf('C:\\Users\\ZEPHYRUS\\Desktop\\Imperial\\Thesis\\individual_project\\data\\ds002721-prep\\sub-%02d\\eeg', i);
+        eegFilePath = sprintf('C:\\Users\\ZEPHYRUS\\Desktop\\Imperial\\Thesis\\individual_project\\data\\ds002721-prep\\sub-%02d\\eeg\\sub-%02d_task-run%d.set', i, i, j);
+        filename = sprintf('sub-%02d_task-run%d_prep.set', i, j);
+
+        % load data
+        files{end+1} = eegFilePath;
+        newFiles{end+1} = filename;
+    end
+    disp(files);
+    % load subject
+    [ALLEEG EEG] = pop_loadset('filename', files);
+    
+    % load files
+    [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 4,'retrieve',[1:4] ,'study',0); 
+
+    % edit channels
+    EEG=pop_chanedit(EEG, []);
+
+    % filter data
+    EEG = pop_eegfiltnew(EEG, 'locutoff',0.5);
+    EEG = pop_eegfiltnew(EEG, 'hicutoff',50);
+    chanlocs = EEG.chanlocs;
+
+    % resample data
+    EEG = pop_resample(EEG, sampling_rate);
+
+    for index = 1:length(EEG)
+	    pop_saveset(EEG(index), 'filename', newFiles{index}, 'filepath', prepPath);
+    end
+
+    eeglab('redraw');
+end
