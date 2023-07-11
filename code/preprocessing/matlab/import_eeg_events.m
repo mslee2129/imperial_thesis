@@ -18,6 +18,9 @@ for i = 1:31
         EEG = pop_importevent(EEG, 'event', eventFilePath, 'fields', {'latency', 'duration', 'type'}, 'timeunit', 1);
         [ALLEEG, EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);
 
+        EEG=pop_chanedit(EEG, []);
+        [ALLEEG, EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);
+
         EEG = pop_saveset( EEG, 'filename', filename,'filepath', prepPath);
         [ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);
     

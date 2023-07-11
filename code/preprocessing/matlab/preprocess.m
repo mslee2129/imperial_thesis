@@ -2,39 +2,25 @@ sampling_rate = 128;
 
 [ALLEEG EEG CURRENTSET ALLCOM] = eeglab;
 for i = 1:1
-    % Form the file paths with the updated integer
-    files = {};
-    newFiles = {};
     for j = 2:5
         prepPath = sprintf('C:\\Users\\ZEPHYRUS\\Desktop\\Imperial\\Thesis\\individual_project\\data\\ds002721-prep\\sub-%02d\\eeg', i);
         eegFilePath = sprintf('C:\\Users\\ZEPHYRUS\\Desktop\\Imperial\\Thesis\\individual_project\\data\\ds002721-prep\\sub-%02d\\eeg\\sub-%02d_task-run%d.set', i, i, j);
         filename = sprintf('sub-%02d_task-run%d_prep.set', i, j);
 
-        % load data
-        files{end+1} = eegFilePath;
-        newFiles{end+1} = filename;
+        EEG = pop_loadset('filename', eegFilePath);
+
+        EEG = pop_resample(EEG, sampling_rate);
+
+        EEG = pop_eegfiltnew(EEG, 'locutoff', 0.5);
+
+        EEG = pop_cleanline(EEG, 'Bandwidth',2,'ChanCompIndices',[1:19], ...
+        'SignalType','Channels','ComputeSpectralPower',true,'LineFrequencies',[60 120] , ...
+        'NormalizeSpectrum',false,'LineAlpha',0.01,'PaddingFactor',2,'PlotFigures',false, ...
+        'ScanForLines',true,'SmoothingFactor',100,'VerbosityLevel',1,'SlidingWinLength', ...
+        EEG.pnts/EEG.srate,'SlidingWinStep',EEG.pnts/EEG.srate);
+
+        pop_saveset(EEG, 'filename', filename, 'filepath', prepPath);
+
+        eeglab('redraw');
     end
-    disp(files);
-    % load subject
-    [ALLEEG EEG] = pop_loadset('filename', files);
-    
-    % load files
-    [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 4,'retrieve',[1:4] ,'study',0); 
-
-    % edit channels
-    EEG=pop_chanedit(EEG, []);
-
-    % filter data
-    EEG = pop_eegfiltnew(EEG, 'locutoff',0.5);
-    EEG = pop_eegfiltnew(EEG, 'hicutoff',40);
-    chanlocs = EEG.chanlocs;
-
-    % resample data
-    EEG = pop_resample(EEG, sampling_rate);
-
-    for index = 1:length(EEG)
-	    pop_saveset(EEG(index), 'filename', newFiles{index}, 'filepath', prepPath);
-    end
-
-    eeglab('redraw');
 end
