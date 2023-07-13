@@ -6,7 +6,6 @@ import functools
 
 ## Adapted from CycleGAN paper: https://junyanz.github.io/CycleGAN/
 
-
 def get_norm_layer(type):
     '''
     Return a normalization layer
@@ -113,38 +112,7 @@ class Identity(nn.Module):
 
 class PixelDiscriminator:
     pass
-# discriminator 1
-# shape of input is spectro, output is mel
-# class DiscriminatorX(nn.Module):
-#     '''
-#     Dx for cGAN
-#     70x70 PatchGAN
-#     mel+spect as input, patch prediction as output
-#     '''
-#     def __init__(self, input_channels):
-#         super(DiscriminatorX, self).__init__()
 
-#         self.model = nn.Sequential(
-#             nn.Conv2d(input_channels, 64, kernel_size=4, stride=2, padding=1),
-#             nn.LeakyReLU(0.2, inplace=True),
-#             nn.Conv2d(64, 128, kernel_size=4, stride=2, padding=1),
-#             nn.BatchNorm2d(128),
-#             nn.LeakyReLU(0.2, inplace=True),
-#             nn.Conv2d(128, 256, kernel_size=4, stride=2, padding=1),
-#             nn.BatchNorm2d(256),
-#             nn.LeakyReLU(0.2, inplace=True),
-#             nn.Conv2d(256, 512, kernel_size=4, stride=1, padding=1),
-#             nn.BatchNorm2d(512),
-#             nn.LeakyReLU(0.2, inplace=True),
-#             nn.Conv2d(512, 1, kernel_size=4, stride=1, padding=1),
-#             nn.Sigmoid()
-#         )
-
-#     def forward(self, x):
-#         return self.model(x)
-    
-#     def save(self, filepath):
-#         pass
 
 class ResnetGenerator(nn.Module):
     '''
@@ -190,7 +158,7 @@ class ResnetGenerator(nn.Module):
                         nn.ReLU(True)]
         
         model += [nn.ReflectionPad2d(3)]
-        model += [nn.Conv2d(ngf, output_nc, kernel_size=7, padding=0)]
+        model += [nn.Conv2d(ngf, output_nc, kernel_size=7, padding=0)] # change kernel size?
         model += [nn.Tanh()]
 
         self.model = nn.Sequential(*model)
@@ -199,7 +167,7 @@ class ResnetGenerator(nn.Module):
         return self.model(x)
     
 
-class UnetGenerator:
+class UnetGenerator(nn.Module):
     pass
 
 
@@ -299,5 +267,73 @@ class NLayerDiscriminator(nn.Module):
     
 
 # losses
-class GANLoss:
-    pass
+class GANLoss(nn.Module):
+    '''
+    Define GAN objectives
+    '''
+
+    def __init__(self, gan_mode, target_real_label=1.0, target_fake_label=0.0):
+        super(GANLoss, self).__init__()
+        self.register_buffer('real_label', torch.tensor(target_real_label))
+        self.register_buffer('fake_label', torch.tensor(target_fake_label))
+        self.gan_mode = gan_mode
+        if gan_mode == 'lsgan':
+            self.loss = nn.MSELoss()
+        elif gan_mode == 'vanilla':
+            self.loss = nn.BCEWithLogitsLoss()
+        elif gan_mode in ['wgangp']:
+            self.loss = None
+        else:
+            raise NotImplementedError('gan mode %s not implemented' % gan_mode)
+        
+    def get_target_tensor(self, prediction, target_is_real):
+        '''
+        Create label tensors with the same size as input
+        '''
+
+        if target_is_real:
+            target_tensor = self.real_label
+        else:
+            target_tensor = self.fake_label
+        return target_tensor.expand_as(prediction)
+    
+    def __call__(self, prediction, target_is_real):
+        '''
+        Calculate loss given output of D and gound truth labels
+        '''
+
+        if self.gan_mode in ['lsgan', 'vanilla']:
+            target_tensor = self.get_target_tensor(prediction, target_is_real)
+            loss = self.loss(prediction, target_tensor)
+        elif self.gan_mode == 'wgangp':
+            if target_is_real:
+                loss = -prediction.mean()
+            else:
+                loss = prediction.mean()
+        return loss
+    
+    def cal_gradient_penalty(netD, real_data, fake_data, device, type='mixed', constant=1.0, lambda_gp=10.0):
+        '''
+        Calculate gradient penalty loss
+        '''
+        if lambda_gp > 0.0:
+            if type == 'real':   # either use real images, fake images, or a linear interpolation of two.
+                interpolatesv = real_data
+            elif type == 'fake':
+                interpolatesv = fake_data
+            elif type == 'mixed':
+                alpha = torch.rand(real_data.shape[0], 1, device=device)
+                alpha = alpha.expand(real_data.shape[0], real_data.nelement() // real_data.shape[0]).contiguous().view(*real_data.shape)
+                interpolatesv = alpha * real_data + ((1 - alpha) * fake_data)
+            else:
+                raise NotImplementedError('{} not implemented'.format(type))
+            interpolatesv.requires_grad_(True)
+            disc_interpolates = netD(interpolatesv)
+            gradients = torch.autograd.grad(outputs=disc_interpolates, inputs=interpolatesv,
+                                            grad_outputs=torch.ones(disc_interpolates.size()).to(device),
+                                            create_graph=True, retain_graph=True, only_inputs=True)
+            gradients = gradients[0].view(real_data.size(0), -1)  # flat the data
+            gradient_penalty = (((gradients + 1e-16).norm(2, dim=1) - constant) ** 2).mean() * lambda_gp        # added eps
+            return gradient_penalty, gradients
+        else:
+            return 0.0, None
