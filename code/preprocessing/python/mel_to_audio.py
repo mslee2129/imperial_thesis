@@ -10,8 +10,8 @@ file = 'stimulus1.png'
 audio = 'data/ds002721-prep/stimulus/set1/mp3/Soundtrack360_wav/001_0.wav'
 filename = 'data/ds002721-prep/stimulus/mp3/Soundtrack360_mp3/001.mp3'
 
-y, sr = y,sr = librosa.load(filename, sr=22050, mono=True, duration=10, offset=30)
-y_tensor = torch.from_numpy(y).to(device='cpu', dtype=torch.float32)
+y, sr = y,sr = librosa.load(filename, sr=22050)
+y_tensor = torch.from_numpy(y).to(device='cuda', dtype=torch.float32)
 
 WV = WaveGlowVocoder()
 mel = WV.wav2mel(y_tensor)

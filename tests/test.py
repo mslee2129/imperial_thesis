@@ -4,41 +4,22 @@ import librosa
 import matplotlib.pyplot as plt
 import soundfile as sf
 import math
-import tensorflow as tf
-import tensorflow_datasets as tfds
-import tensorflow_hub as hub
+from PIL import Image
 
-module = hub.KerasLayer('https://tfhub.dev/google/soundstream/mel/decoder/music/1')
+fname = 'data/nmed-t/eeg_spectrogram/stim1/stim1_sub0_0.png'
 
+img = Image.open(fname)
+print(img.size)
+# img.load()
+# data = np.asarray(img)
+# print(data)
+# print(data.shape)
 
-filename = 'data\stimuli\stimuli hvha1.wav'
+f2 = 'data/nmed-t/mel_spectrogram/stim1_0.png'
 
-y, sr= librosa.load(filename)
-
-
-fig, ax = plt.subplots()
-img = librosa.display.waveshow(y, sr=sr, ax=ax)
-plt.show()
-
-librosa.feature.melspectrogram(y=y, sr=sr)
-
-S = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=128,
-                                    fmax=8000)
-
-
-# S_dB = librosa.power_to_db(S, ref=np.max)
-
-# img = librosa.display.specshow(S_dB, x_axis='time',
-
-#                         y_axis='mel', sr=sr,
-
-#                         fmax=8000, ax=ax)
-
-# fig.colorbar(img, ax=ax, format='%+2.0f dB')
-
-# ax.set(title='Mel-frequency spectrogram')
-# plt.savefig('data/spectrograms/stimulus1.png')
-
-R = librosa.feature.inverse.mel_to_audio(S)
-
-sf.write('data/reconstructed/stim1_reconstructed.wav', R, sr)
+img = Image.open(f2)
+print(img.size)
+# img.load()
+# data = np.asarray(img)
+# print(data)
+# print(data.shape)

@@ -16,63 +16,52 @@ window = 'hann'
 
 
 dir = "C:/Users/ZEPHYRUS/Desktop/Imperial/Thesis/individual_project/data/ds002721-prep/"
-pid = 'sub-01_task-run2_ica.set'
 
-for d in os.listdir(dir):
-  if 'sub' in d:
-    for filename in os.listdir(dir+d+'/eeg/'):
-      if 'ica.set' in filename:
-        print(filename)
+def read_eeg(dname, fname):
+  eeg_file = os.path.join(dname, fname)
+  raw = mne.io.read_raw_eeglab(eeg_file, verbose=True)
+  return raw
 
 
+# for d in os.listdir(dir):
+#   if 'sub' in d:
+#     fpath = dir + d + '/eeg/'
+#     for filename in os.listdir(fpath):
+#       if 'ica.set' in filename:
+#         # print(filename)
+#         raw = read_eeg(fpath, filename)
+#         annot = mne.read_annotations(fpath + filename)
+#         annot = annot.rename({'boundary': 'bad'})
+#         raw.set_annotations(annot)
+#         annot_df = raw.annotations.to_data_frame()
+#         onset_list = list(annot_df.loc[annot_df['description'] == '788'].onset)
+#         print(annot_df)
+#         # annot_df['duration'] = 
 
-# def read_eeg(dname, fname):
-#   eeg_file = os.path.join(dname, fname)
-#   raw = mne.io.read_raw_eeglab(eeg_file, verbose=True)
-#   # raw.load_data()
-#   # print(raw.info)
-#   return raw
+#         # if onset of next bad is < 12 sec after onset of 788:
+        
+#         # tmax = onset + (onset of next bad - onset)
+#         # crop raw from onset to tmax
 
-# raw = read_eeg(dir, pid)
+#         # else:
+#         # crop raw from onset to onset + 12
 
-# # raw_plot = raw.plot(block=True)
-
-
-# annot = mne.read_annotations(dir + 'sub-01_task-run2_ica.set')
-# # events = mne.events_from_annotations(raw)
-# # print(annot)
-# # print(events)
-
-
-
-# annot = annot.rename({'boundary': 'bad'})
-# raw.set_annotations(annot)
-
-# annot_df = raw.annotations.to_data_frame()
-# print(annot_df)
-# # onset = annot_df['onset']
-# # print(annot_df)
-# # raw = raw.copy().crop(tmin=tmin, tmax=tmax, include_tmax=True)
-
-# # onset_list = list(annot_df.loc[annot_df['description'] == '788'].onset)
+#         epochs = mne.make_fixed_length_epochs(raw, duration=epoch_duration, reject_by_annotation=True, overlap=0.5)
+#         data_array = epochs.get_data()
+#         for data in data_array: 
+#           print(data)
+#           # fig, ax = plt.subplots()
+#           # img = ax.imshow(data, cmap='magma', interpolation='nearest', aspect='auto')
+#           # plt.savefig()
+#           break
+#     break
 
 
-# epochs = mne.make_fixed_length_epochs(raw, duration=epoch_duration, reject_by_annotation=True, overlap=0.5)
 
-# data_array = epochs.get_data()
 
-# print(data_array[0].shape)
-# sample = data_array[0]
-
-# fig, ax = plt.subplots(figsize=(10, 10))  # Adjust the figure size as needed
-
-# # Plot the EEG data
-# img = ax.imshow(sample, cmap='magma', interpolation='nearest', aspect='auto')
-
-# # Customize the plot
-# ax.set_ylabel('Channels', labelpad=16)
-# ax.set_xlabel('Samples', labelpad=16)
-
-# # Show the plot
-# plt.show()
-# fig .savefig('code/preprocessing/samples/raw_eeg_spectrogram.png')
+raw = read_eeg(dir, 'sub-03/eeg/sub-03_task-run3_ica.set')
+annot = mne.read_annotations(dir + 'sub-03/eeg/sub-03_task-run4_ica.set')
+annot_df = raw.annotations.to_data_frame()
+onset_list = list(annot_df.loc[annot_df['description'] == '788'].onset)
+print(onset_list)
+raw.plot(block=True)

@@ -2,16 +2,17 @@ import librosa
 import numpy as np
 import os
 from pathlib import Path
-import tensorflow as tf
-import tensorflow_hub as hub
-import matplotlib.pyplot as plt
 import math
+import matplotlib.pyplot as plt
 
-dir = 'data/ds002721-prep/stimulus/mp3/Soundtrack360/'
-dst = 'data/ds002721-prep/mel_spectrogram/'
+dir = 'data/nmed-t/stimulus/segment/'
+dst = 'data/nmed-t/mel_spectrogram/'
 
 for filename in os.listdir(dir):
-    if filename[-3:] == 'wav':
+    for i in range(20):
+        fname = filename[:6] + '_sub' + str(i) + filename[6:]
+        fname = fname[:-4]
+        print(fname)
         y, sr = librosa.load(dir + filename)
         fig, ax = plt.subplots()
         S = librosa.feature.melspectrogram(y=y, sr=sr)
@@ -22,7 +23,7 @@ for filename in os.listdir(dir):
         cb = fig.colorbar(img, ax=ax, format='%+2.0f dB')
         plt.axis('off')
         cb.remove()
-        plt.savefig(dst + Path(filename).stem + '.png', bbox_inches='tight', pad_inches=0.0)
+        plt.savefig(dst + fname + '.png', bbox_inches='tight', pad_inches=0.0)
         plt.clf()
         plt.close()
-        print(filename)
+    
