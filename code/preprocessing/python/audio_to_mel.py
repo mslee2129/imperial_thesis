@@ -19,7 +19,7 @@ for filename in os.listdir(dir):
         S_dB = librosa.power_to_db(S, ref=np.max)
         im = Image.fromarray(S_dB+80).convert('L')
         width, height = im.size
-        img = Image.new(im.mode, (height, height) (255))
+        img = Image.new(im.mode, (height, height), (255))
         img.paste(im, ((height - width) // 2, 0))
         img.save(dst+fname+'.tiff')
     

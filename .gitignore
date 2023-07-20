@@ -2,3 +2,4 @@
 /data
 /job.sh.*
 /checkpoints
+/pix2pix_res

@@ -8,4 +8,4 @@ source ~/venv/venv/bin/activate
 
 cd $PBS_O_WORKDIR
 
-python ./code/model/train.py --model pix2pix --dataroot ./data/nmed-t-prep/AB  --dataset_mode aligned --no_html --netG unet_256 --netD basic --gan_mode vanilla --name pix2pix_AtoB --batch_size 32 --gpu_ids 1 --display_id -1
+python ./code/model/train.py --model pix2pix --dataroot ./data/nmed-t-prep/AB  --dataset_mode aligned --no_html --netG unet_128 --netD basic --gan_mode vanilla --name pix2pix_AtoB --batch_size 32 --gpu_ids 1 --display_id -1
