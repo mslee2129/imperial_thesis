@@ -16,7 +16,7 @@ tr = 0.8
 ts = 0.1
 va = 0.1
 
-ext = '.png'
+ext = '.tiff'
 
 A_list = [filename for filename in os.listdir(eegdir) if os.path.splitext(filename)[-1] in ext]
 B_list = [filename for filename in os.listdir(meldir) if os.path.splitext(filename)[-1] in ext]
