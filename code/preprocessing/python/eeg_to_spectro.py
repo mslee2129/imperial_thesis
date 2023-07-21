@@ -31,7 +31,7 @@ for fname in os.listdir(dir):
                     name = dst + 'stim' + str(n) + '_sub' + str(i) + '_' + str(int(j/125)) + '.tiff'
 
                 sample = sub[:,j:j+125]
-                psd, freqs = mne.time_frequency.psd_array_welch(sample, sfreq, fmin=1, fmax=63.5, n_fft=256, n_per_seg=256)
+                psd, freqs = mne.time_frequency.psd_array_welch(sample, sfreq, fmin=1, fmax=63.5, n_fft=256, n_per_seg=256, verbose=False)
                 psd = np.pad(psd, ((0, 3), (0, 0)), mode='edge')
                 cmap = plt.get_cmap('gray')
                 norm = matplotlib.colors.Normalize()
