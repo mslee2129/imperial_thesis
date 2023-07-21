@@ -2,6 +2,10 @@ import scipy.io as sio
 import matplotlib.pyplot as plt
 import os
 import mne
+import numpy as np
+import matplotlib
+from PIL import Image
+
 
 dir = 'data/nmed-t/eeg/'
 dst = 'data/nmed-t/eeg_spectrogram/'
@@ -26,12 +30,10 @@ for fname in os.listdir(dir):
                 name = dst + 'stim' + str(n) + '_sub' + str(i) + '_' + str(int(j/125)) + '.tiff'
 
             sample = sub[:,j:j+125]
-            psd, freqs = mne.time_frequency.psd_array_welch(sample, sfreq, fmin=1, fmax=50, n_fft=256, n_per_seg=256)
-            
-            fig, ax = plt.subplots()
-            im = ax.imshow(psd, origin='lower', aspect='auto', cmap='gray', extent=[0, 1, freqs[0], freqs[-1]])
-            plt.axis('off')
-            plt.savefig(name, bbox_inches='tight', pad_inches=0.0)
-            plt.clf()
-            plt.close()
+            psd, freqs = mne.time_frequency.psd_array_welch(sample, sfreq, fmin=1, fmax=63.5, n_fft=256, n_per_seg=256)
+            psd = np.pad(psd, ((0, 3), (0, 0)), mode='edge')
+            cmap = plt.get_cmap('gray')
+            norm = matplotlib.colors.Normalize()
+            im = Image.fromarray(np.uint8(cmap(norm(psd))*255))
+            im.save(name)
     n += 1
