@@ -1,0 +1,12 @@
+[fold_A] =  ./data/nmed-t-prep/A
+[fold_B] =  ./data/nmed-t-prep/B
+[fold_AB] =  ./data/nmed-t-prep/AB
+[num_imgs] =  1000000
+[use_AB] =  False
+[no_multiprocessing] =  False
+split = train, use 45824/45824 images
+split = train, number of images = 45824
+split = val, use 5728/5728 images
+split = val, number of images = 5728
+split = test, use 5728/5728 images
+split = test, number of images = 5728

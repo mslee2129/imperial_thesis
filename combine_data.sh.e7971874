@@ -1,0 +1,16 @@
+Loading SciPy-bundle/2022.05-foss-2022a
+  Loading requirement: GCCcore/11.3.0 zlib/1.2.12-GCCcore-11.3.0
+    binutils/2.38-GCCcore-11.3.0 GCC/11.3.0 numactl/2.0.14-GCCcore-11.3.0
+    XZ/5.2.5-GCCcore-11.3.0 libxml2/2.9.13-GCCcore-11.3.0
+    libpciaccess/0.16-GCCcore-11.3.0 hwloc/2.7.1-GCCcore-11.3.0 OpenSSL/1.1
+    libevent/2.1.12-GCCcore-11.3.0 UCX/1.12.1-GCCcore-11.3.0
+    libfabric/1.15.1-GCCcore-11.3.0 PMIx/4.1.2-GCCcore-11.3.0
+    UCC/1.0.0-GCCcore-11.3.0 OpenMPI/4.1.4-GCC-11.3.0 OpenBLAS/0.3.20-GCC-11.3.0
+    FlexiBLAS/3.2.0-GCC-11.3.0 FFTW/3.3.10-GCC-11.3.0 gompi/2022a
+    FFTW.MPI/3.3.10-gompi-2022a ScaLAPACK/2.2.0-gompi-2022a-fb foss/2022a
+    bzip2/1.0.8-GCCcore-11.3.0 ncurses/6.3-GCCcore-11.3.0
+    libreadline/8.1.2-GCCcore-11.3.0 Tcl/8.6.12-GCCcore-11.3.0
+    SQLite/3.38.3-GCCcore-11.3.0 GMP/6.2.1-GCCcore-11.3.0
+    libffi/3.4.2-GCCcore-11.3.0 Python/3.10.4-GCCcore-11.3.0
+    pybind11/2.9.2-GCCcore-11.3.0
+python: can't open file '/code/model/datasets/combine_A_and_B.py': [Errno 2] No such file or directory
