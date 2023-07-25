@@ -1,5 +1,7 @@
 /venv
 /data
-/job.sh.*
+/job.sh*
 /checkpoints
 /pix2pix_res
+/pix2pix_psd_res
+/core.*

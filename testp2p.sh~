@@ -8,4 +8,4 @@ source ~/venv/venv/bin/activate
 
 cd $PBS_O_WORKDIR
 
-python ./code/model/test.py --dataroot ./data/nmed-t-prep/AB --name pix2pix_AtoB --model pix2pix --results_dir pix2pix_res
+python ./code/model/test.py --dataroot ./data/nmed-t-prep/AB --name pix2pix_psd_gray1 --model pix2pix --results_dir pix2pix_psd_res --netG unet_128 --norm batch --dataset_mode aligned
