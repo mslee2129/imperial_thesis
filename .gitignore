@@ -5,3 +5,4 @@
 /pix2pix_res
 /pix2pix_psd_res
 /core.*
+/*.sh.*

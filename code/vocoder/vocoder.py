@@ -6,8 +6,8 @@ import matplotlib
 import os
 from pathlib import Path
 
-dir = 'pix2pix_psd_res/pix2pix_psd_gray1/test_latest/images/'
-dst = 'pix2pix_psd_res/pix2pix_psd_gray1/test_latest/audio/'
+dir = 'pix2pix_psd_res/pix2pix_psd_resnet_ls/test_latest/images/'
+dst = 'pix2pix_psd_res/pix2pix_psd_resnet_ls/test_latest/audio/'
 
 for filename in os.listdir(dir):
     if 'B' in filename:
