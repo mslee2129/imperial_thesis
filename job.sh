@@ -8,4 +8,4 @@ source ~/venv/venv/bin/activate
 
 cd $PBS_O_WORKDIR
 
-python ./code/vocoder/vocoder.py
+python ./code/model/split_cycle.py

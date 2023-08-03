@@ -13,11 +13,6 @@ class CCGANModel(BaseModel):
     @staticmethod
     def modify_commandline_options(parser, is_train):
         parser.set_defaults(norm='instance', netG='unet_256', dataset_mode='aligned')
-        if is_train:
-            parser.add_argument('--lambda_L1', type=float, default=100.0, help='weight for L1 loss')
-            parser.add_argument('--lambda_B', type=float, default=10.0, help='weight for cycle loss (B -> A -> B)')
-            parser.add_argument('--lambda_identity', type=float, default=0.5, help='use identity mapping. Setting lambda_identity other than 0 has an effect of scaling the weight of the identity mapping loss. For example, if the weight of the identity loss should be 10 times smaller than the weight of the reconstruction loss, please set lambda_identity = 0.1')
-
         return parser
     
     def __init__(self, opt):
@@ -49,10 +44,10 @@ class CCGANModel(BaseModel):
                                          opt.norm, opt.init_type, opt.init_gain, self.gpu_ids)
             self.netD_B = model.define_D(opt.input_nc, opt.ndf, opt.netD, opt.n_layers_D, 
                                          opt.norm, opt.init_type, opt.init_gain, self.gpu_ids)
-            self.netD_C = model.define_D(opt.input_nc + opt.output_nc, opt.ndf, opt.netD, opt.n_layers_D,
-                                         opt.norm, opt.init_type, opt.init_gain, self.gpu_ids)
-            self.netD_D = model.define_D(opt.input_nc + opt.output_nc, opt.ndf, opt.netD, opt.n_layers_D,
-                                         opt.norm, opt.init_type, opt.init_gain, self.gpu_ids)
+            # self.netD_C = model.define_D(opt.input_nc + opt.output_nc, opt.ndf, opt.netD, opt.n_layers_D,
+            #                              opt.norm, opt.init_type, opt.init_gain, self.gpu_ids)
+            # self.netD_D = model.define_D(opt.input_nc + opt.output_nc, opt.ndf, opt.netD, opt.n_layers_D,
+            #                              opt.norm, opt.init_type, opt.init_gain, self.gpu_ids)
             
         if self.isTrain:
             self.fake_A_pool = ImagePool(opt.pool_size)
@@ -63,15 +58,15 @@ class CCGANModel(BaseModel):
             self.criterionIdt = torch.nn.L1Loss()
             # initialise optimisers
             self.optimizer_G = torch.optim.Adam(itertools.chain(self.netG_A.parameters(), self.netG_B.parameters()), lr=opt.lr, betas=(opt.beta1, 0.999))
-            self.optimizer_D_A = torch.optim.Adam(itertools.chain(self.netD_A.parameters(), self.netD_B.parameters()), lr=opt.lr, betas=(opt.beta1, 0.999))
+            self.optimizer_D_A = torch.optim.Adam(itertools.chain(self.netD_A.parameters(), self.netD_A.parameters()), lr=opt.lr, betas=(opt.beta1, 0.999))
             self.optimizer_D_B = torch.optim.Adam(itertools.chain(self.netD_B.parameters(), self.netD_B.parameters()), lr=opt.lr, betas=(opt.beta1, 0.999))
-            self.optimizer_D_C = torch.optim.Adam(itertools.chain(self.netD_C.parameters(), self.netD_B.parameters()), lr=0.0001, betas=(opt.beta1, 0.999))
-            self.optimizer_D_D = torch.optim.Adam(itertools.chain(self.netD_C.parameters(), self.netD_B.parameters()), lr=0.0001, betas=(opt.beta1, 0.999))
+            # self.optimizer_D_C = torch.optim.Adam(itertools.chain(self.netD_C.parameters(), self.netD_C.parameters()), lr=0.0001, betas=(opt.beta1, 0.999))
+            # self.optimizer_D_D = torch.optim.Adam(itertools.chain(self.netD_D.parameters(), self.netD_D.parameters()), lr=0.0001, betas=(opt.beta1, 0.999))
             self.optimizers.append(self.optimizer_G)
             self.optimizers.append(self.optimizer_D_A)
             self.optimizers.append(self.optimizer_D_B)
-            self.optimizers.append(self.optimizer_D_C)
-            self.optimizers.append(self.optimizer_D_D)
+            # self.optimizers.append(self.optimizer_D_C)
+            # self.optimizers.append(self.optimizer_D_D)
 
     def set_input(self, input):
         AtoB = self.opt.direction == 'AtoB'
@@ -84,7 +79,6 @@ class CCGANModel(BaseModel):
         self.rec_A = self.netG_B(self.fake_B)   # G_B(G_A(A))
         self.fake_A = self.netG_B(self.real_B) # G_B(B)
         self.rec_B = self.netG_A(self.fake_A) # G_A(G_B(B))
-
 
     def backward_D_basic(self, netD, real, fake):
         '''
@@ -111,15 +105,28 @@ class CCGANModel(BaseModel):
         fake_A = self.fake_A_pool.query(self.fake_A)
         self.loss_D_B = self.backward_D_basic(self.netD_B, self.real_A, fake_A)
 
-    def backward_D_C(self,opt):
-        if opt.super_start==1:
-           loss_D_C = self.backward_D_basic(self.netD_C, torch.cat((self.real_A,(self.real_B)),1), torch.cat((Variable(self.fake_A),(self.real_B)),1))
-           self.loss_D_C = loss_D_C.data[0]
+    # def backward_D_C(self):
+    #     real_A_and_real_B = torch.cat((self.real_A, self.real_B), 1)
+    #     fake_A_and_real_B = torch.cat((self.fake_A, self.real_B), 1)
 
-    def backward_D_D(self,opt):
-        if opt.super_start==1:
-           loss_D_D = self.backward_D_basic(self.netD_D, torch.cat((self.real_B,(self.real_A)),1),torch.cat((Variable(self.fake_B),(self.real_A)),1) )
-           self.loss_D_D = loss_D_D.data[0]
+    #     real_A_and_real_B.requires_grad_()  # Ensure gradients are computed for this tensor
+    #     fake_A_and_real_B.requires_grad_()  # Ensure gradients are computed for this tensor
+
+    #     self.loss_D_C = self.backward_D_basic(self.netD_C, real_A_and_real_B, fake_A_and_real_B)
+
+    #     # self.loss_D_C = self.backward_D_basic(self.netD_C, torch.cat((self.real_A,(self.real_B)),1), torch.cat((Variable(self.fake_A),(self.real_B)),1))
+
+    # def backward_D_D(self):
+    #     real_B_and_real_A = torch.cat((self.real_B, self.real_A), 1)
+    #     fake_B_and_real_A = torch.cat((self.fake_B, self.real_A), 1)
+
+    #     real_B_and_real_A.requires_grad_()  # Ensure gradients are computed for this tensor
+    #     fake_B_and_real_A.requires_grad_()  # Ensure gradients are computed for this tensor
+
+    #     self.loss_D_C = self.backward_D_basic(self.netD_C, real_B_and_real_A, fake_B_and_real_A)
+
+        # self.loss_D_D = self.backward_D_basic(self.netD_D, torch.cat((self.real_B,(self.real_A)),1), torch.cat((Variable(self.fake_B),(self.real_A)),1))
+
 
     def backward_G(self):
         """Calculate the loss for generators"""
