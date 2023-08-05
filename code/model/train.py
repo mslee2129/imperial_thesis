@@ -128,8 +128,6 @@ if __name__ == '__main__':
     
     scheduler = ASHAScheduler(
         time_attr="training_iteration",
-        metric=opt.eval_metric,
-        mode="max",
         max_t=100,
         grace_period=10,
         reduction_factor=3,
