@@ -39,7 +39,7 @@ def generate_stats_from_log(experiment_name, line_interval=10, nb_data=10800, en
         if key != "epoch":
             plt.plot(dicts["epoch"], dicts[key], label=key)
     plt.legend(loc="best")
-    plt.savefig('pix2pix_psd_res/pix2pix_psd_resnet_van/figure.png')
+    plt.savefig('ccgan_res/ccgan_base/figure.png')
 
 
-generate_stats_from_log('checkpoints/pix2pix_psd_resnet_van')
+generate_stats_from_log('checkpoints/ccgan_base/')

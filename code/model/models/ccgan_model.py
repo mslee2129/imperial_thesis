@@ -29,7 +29,7 @@ class CCGANModel(BaseModel):
         self.visual_names = self.visual_names_A + self.visual_names_B
 
         if self.isTrain:
-            self.model_names = ['G_A', 'G_B', 'D_A', 'D_B', 'D_C', 'D_D']
+            self.model_names = ['G_A', 'G_B', 'D_A', 'D_B'] #', D_C', 'D_D']
         else:
             self.model_names = ['G_A', 'G_B']
 
@@ -179,11 +179,11 @@ class CCGANModel(BaseModel):
         self.optimizer_D_B.zero_grad()
         self.backward_D_B()
         self.optimizer_D_B.step()
-        # D_C
-        self.optimizer_D_C.zero_grad()
-        self.backward_D_C()
-        self.optimizer_D_C.step()
-        # D_D
-        self.optimizer_D_D.zero_grad()
-        self.backward_D_D()
-        self.optimizer_D_D.step() # update D_A and D_B's weights
+        # # D_C
+        # self.optimizer_D_C.zero_grad()
+        # self.backward_D_C()
+        # self.optimizer_D_C.step()
+        # # D_D
+        # self.optimizer_D_D.zero_grad()
+        # self.backward_D_D()
+        # self.optimizer_D_D.step() # update D_A and D_B's weights
