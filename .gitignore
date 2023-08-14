@@ -6,3 +6,4 @@
 /pix2pix_psd_res
 /core.*
 /*.sh.*
+/scripts

@@ -32,6 +32,7 @@ from data import create_dataset
 from models import create_model
 from util.visualizer import save_images
 from util import html
+from torchmetrics.image import PeakSignalNoiseRatio, StructuralSimilarityIndexMeasure
 
 try:
     import wandb
@@ -51,6 +52,9 @@ if __name__ == '__main__':
     model = create_model(opt)      # create a model given opt.model and other options
     model.setup(opt)               # regular setup: load and print networks; create schedulers
 
+    psnr_metric = PeakSignalNoiseRatio().to(model.device)
+    ssim_metric = StructuralSimilarityIndexMeasure(data_range=1.0).to(model.device)
+
     # initialize logger
     if opt.use_wandb:
         wandb_run = wandb.init(project=opt.wandb_project_name, name=opt.name, config=opt) if not wandb.run else wandb.run
@@ -68,10 +72,21 @@ if __name__ == '__main__':
     if opt.eval:
         model.eval()
     for i, data in enumerate(dataset):
+        val_ssim = 0.0
+        val_psnr = 0.0
         if i >= opt.num_test:  # only apply our model to opt.num_test images.
             break
         model.set_input(data)  # unpack data from data loader
         model.test()           # run inference
+        with torch.no_grad():
+            model.set_input(data)
+            model.forward()
+            val_psnr += psnr_metric(model.fake_B, model.real_B)
+            val_ssim += ssim_metric(model.fake_B, model.real_B)
+        val_psnr /= len(data)
+        val_ssim /= len(data)
+        print("PSNR: ", val_psnr)
+        print("SSIM: ", val_ssim)
         visuals = model.get_current_visuals()  # get image results
         img_path = model.get_image_paths()     # get image paths
         if i % 5 == 0:  # save images to an HTML file

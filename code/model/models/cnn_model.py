@@ -38,7 +38,7 @@ class CNNModel(BaseModel):
     def forward(self):
         '''
         '''
-        self.fake_B = self.netG(self.real_A)
+        self.fake_B = self.netG(self.real_A).to(self.device)
 
     def backward(self):
         self.loss_L1 = self.criterionL1(self.fake_B, self.real_B) * self.opt.lambda_L1
