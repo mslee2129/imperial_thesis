@@ -58,7 +58,7 @@ class Pix2PixModel(BaseModel):
 
         if self.isTrain:
             # define loss functions
-            self.criterionGAN = model.GANLoss(opt.gan_mode).to(self.device)
+            self.criterionGAN = model.GANLoss(opt.gan_mode, opt.label_smoothing).to(self.device)
             self.criterionL1 = torch.nn.L1Loss()
             # initialize optimizers; schedulers will be automatically created by function <BaseModel.setup>.
             self.optimizer_G = torch.optim.Adam(self.netG.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
@@ -88,15 +88,11 @@ class Pix2PixModel(BaseModel):
         # Fake; stop backprop to the generator by detaching fake_B
         fake_AB = torch.cat((self.real_A, self.fake_B), 1)  # we use conditional GANs; we need to feed both input and output to the discriminator
         pred_fake = self.netD(fake_AB.detach())
-        # label smoothing
-        smooth_fake_labels = torch.zeros_like(pred_fake)
-        self.loss_D_fake = self.criterionGAN(pred_fake, smooth_fake_labels if self.opt.label_smoothing else False)
+        self.loss_D_fake = self.criterionGAN(pred_fake, False)
         # Real
         real_AB = torch.cat((self.real_A, self.real_B), 1)
         pred_real = self.netD(real_AB)
-        # label smoothing
-        smooth_real_labels = torch.ones_like(pred_real) * 0.9
-        self.loss_D_real = self.criterionGAN(pred_real, smooth_real_labels if self.opt.label_smoothing else True)
+        self.loss_D_real = self.criterionGAN(pred_real, True)
         # combine loss and calculate gradients
         self.loss_D = (self.loss_D_fake + self.loss_D_real) * 0.5
         self.loss_D.backward()
