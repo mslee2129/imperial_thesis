@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import os
 
-dir = './results/eval/cnn/csv/'
+dir = './results/eval/cgan/csv/'
 dst = './results/eval/graphs/'
 
 psnr_df = pd.DataFrame()

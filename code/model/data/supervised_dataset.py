@@ -6,6 +6,13 @@ import random
 
 class SupervisedDataset(BaseDataset):
     """
+    This dataset class can load supervised datasets.
+
+    It requires two directories to host training images from domain A '/path/to/data/trainA'
+    and from domain B '/path/to/data/trainB' respectively.
+    You can train the model with the dataset flag '--dataroot /path/to/data'.
+    Similarly, you need to prepare two directories:
+    '/path/to/data/testA' and '/path/to/data/testB' during test time.
     """
 
     def __init__(self, opt):

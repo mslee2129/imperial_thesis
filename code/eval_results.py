@@ -4,8 +4,8 @@ import os
 import re
 import pandas as pd
 
-dir = './results/eval/cnn/txt'
-dst = './results/eval/cnn/csv/'
+dir = './results/eval/cgan/txt/'
+dst = './results/eval/cgan/csv/'
 
 for file in os.listdir(dir):
     with open(os.path.join(dir, file), 'r') as f:

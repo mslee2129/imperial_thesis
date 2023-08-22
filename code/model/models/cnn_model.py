@@ -4,6 +4,7 @@ from . import model
 
 class CNNModel(BaseModel):
     '''
+    This class implements the CNN model, for learning a mapping from input images to output images given paired data.
     '''
 
     @staticmethod

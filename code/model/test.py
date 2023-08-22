@@ -32,6 +32,7 @@ from data import create_dataset
 from models import create_model
 from util.visualizer import save_images
 from util import html
+import torch
 from torchmetrics.image import PeakSignalNoiseRatio, StructuralSimilarityIndexMeasure
 
 try:
@@ -45,7 +46,7 @@ if __name__ == '__main__':
     # hard-code some parameters for test
     opt.num_threads = 0   # test code only supports num_threads = 0
     opt.batch_size = 1    # test code only supports batch_size = 1
-    opt.serial_batches = True  # disable data shuffling; comment this line if results on randomly chosen images are needed.
+    # opt.serial_batches = True  # disable data shuffling; comment this line if results on randomly chosen images are needed.
     opt.no_flip = True    # no flip; comment this line if results on flipped images are needed.
     opt.display_id = -1   # no visdom display; the test code saves the results to a HTML file.
     dataset = create_dataset(opt)  # create a dataset given opt.dataset_mode and other options
@@ -54,6 +55,8 @@ if __name__ == '__main__':
 
     psnr_metric = PeakSignalNoiseRatio().to(model.device)
     ssim_metric = StructuralSimilarityIndexMeasure(data_range=1.0).to(model.device)
+    val_ssim = 0.0
+    val_psnr = 0.0
 
     # initialize logger
     if opt.use_wandb:
@@ -72,8 +75,6 @@ if __name__ == '__main__':
     if opt.eval:
         model.eval()
     for i, data in enumerate(dataset):
-        val_ssim = 0.0
-        val_psnr = 0.0
         if i >= opt.num_test:  # only apply our model to opt.num_test images.
             break
         model.set_input(data)  # unpack data from data loader
@@ -83,13 +84,15 @@ if __name__ == '__main__':
             model.forward()
             val_psnr += psnr_metric(model.fake_B, model.real_B)
             val_ssim += ssim_metric(model.fake_B, model.real_B)
-        val_psnr /= len(data)
-        val_ssim /= len(data)
-        print("PSNR: ", val_psnr)
-        print("SSIM: ", val_ssim)
+            print(val_psnr)
+            print(val_ssim)
         visuals = model.get_current_visuals()  # get image results
         img_path = model.get_image_paths()     # get image paths
         if i % 5 == 0:  # save images to an HTML file
             print('processing (%04d)-th image... %s' % (i, img_path))
         save_images(webpage, visuals, img_path, aspect_ratio=opt.aspect_ratio, width=opt.display_winsize, use_wandb=opt.use_wandb)
+    val_psnr /= len(dataset)
+    val_ssim /= len(dataset)
+    print("PSNR: ", val_psnr)
+    print("SSIM: ", val_ssim)
     webpage.save()  # save the HTML

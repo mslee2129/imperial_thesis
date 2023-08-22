@@ -7,3 +7,7 @@
 /core.*
 /*.sh.*
 /scripts
+/cnn_res
+/cgan_res
+/results
+/ccgan_res

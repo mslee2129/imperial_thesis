@@ -8,4 +8,4 @@ source ~/venv/venv/bin/activate
 
 cd $PBS_O_WORKDIR
 
-python ./code/model/train.py --dataroot ./data/nmed-t-prep --name cgan_label_smoothing --gpu_ids 0 --model pix2pix --netG resnet_9blocks  --dataset_mode supervised --display_id -1 --input_nc 1 --output_nc 1 --batch_size 8 --netD basic --label_smoothing --gan_mode lsgan
+python ./code/model/train.py --dataroot ./data/nmed-t-prep --name cgan_label_smoothing --gpu_ids 0 --model pix2pix --netG resnet_9blocks  --dataset_mode supervised --display_id -1 --input_nc 1 --output_nc 1 --batch_size 32 --netD basic --label_smoothing --gan_mode vanilla

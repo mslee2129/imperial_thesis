@@ -11,28 +11,44 @@ dst_fake = 'results/eval/cnn/waveform/fake/'
 
 mcd_dict = {}
 
-# for f in os.listdir(dir_real):
-#     n = Path(f).stem
-#     print(n)
-#     mcd_toolbox = Calculate_MCD(MCD_mode='plain')
-#     mcd_value = mcd_toolbox.calculate_mcd(dir_real+n+'.wav', dir_fake+n+'.wav')
-#     print(mcd_value)
-#     mcd_dict[n[:-8]] = mcd_value
+for dir in os.listdir(dir_real):
+    mcd = 0
+    count = 0
+    d = os.path.join(dir_real, dir)
+    for f in os.listdir(d):
+        n = Path(f).stem
+        print(n)
+        fake_n = n[:-6] + 'fake_B'
+        mcd_toolbox = Calculate_MCD(MCD_mode='plain')
+        mcd_value = mcd_toolbox.calculate_mcd(d+'/'+n+'.wav', dir_fake+dir+'/'+fake_n+'.wav')
+        print(mcd_value)
+        mcd += mcd_value
+        count += 1
+        print(count)
+    mcd_dict[dir] = mcd/count
 
-for f in os.listdir(dir_real):
-    n = Path(f).stem
-    y, sr = librosa.load(dir_real+f)
-    fig, ax = plt.subplots()
-    librosa.display.waveshow(y, sr=sr, ax=ax)
-    ax.set(title=n)
-    ax.label_outer()
-    fig.savefig(dst_real+n+'.png')
+print(mcd_dict)
+    
+for dir in os.listdir(dir_real):
+    d = os.path.join(dir_real, dir)
+    for f in os.listdir(d):
+        n = Path(f).stem
+        y, sr = librosa.load(d+'/'+f)
+        fig, ax = plt.subplots()
+        librosa.display.waveshow(y, sr=sr, ax=ax)
+        ax.set(title=n)
+        ax.label_outer()
+        fig.savefig(d+'/'+n+'.png')
+        plt.close()
 
-for f in os.listdir(dir_fake):
-    n = Path(f).stem
-    y, sr = librosa.load(dir_fake+f)
-    fig, ax = plt.subplots()
-    librosa.display.waveshow(y, sr=sr, ax=ax)
-    ax.set(title=n)
-    ax.label_outer()
-    fig.savefig(dst_fake+n+'.png')
+for dir in os.listdir(dir_real):
+    d = os.path.join(dir_real, dir)
+    for f in os.listdir(d):
+        n = Path(f).stem
+        y, sr = librosa.load(d+'/'+f)
+        fig, ax = plt.subplots()
+        librosa.display.waveshow(y, sr=sr, ax=ax)
+        ax.set(title=n)
+        ax.label_outer()
+        fig.savefig(d+'/'+n+'.png')
+        plt.close()

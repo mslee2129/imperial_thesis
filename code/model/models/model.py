@@ -252,7 +252,7 @@ class GANLoss(nn.Module):
             A label tensor filled with ground truth label, and with the size of the input
         """
         if target_is_real:
-            if self.label_smoothing:
+            if self.label_smoothing: # label smoothing
                 target_tensor = self.real_label_smooth
             else:
                 target_tensor = self.real_label
