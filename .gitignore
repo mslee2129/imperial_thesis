@@ -9,5 +9,7 @@
 /scripts
 /cnn_res
 /cgan_res
-/results
 /ccgan_res
+/cgan_25
+/cgan_40
+/cgan_label_smoothing

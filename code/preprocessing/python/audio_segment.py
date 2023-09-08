@@ -1,3 +1,7 @@
+'''
+Code for audio segmentation
+'''
+
 import librosa
 import numpy as np
 import os

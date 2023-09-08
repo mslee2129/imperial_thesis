@@ -3,14 +3,14 @@ import random
 import shutil
 
 
-eegdir = 'data/nmed-t/eeg_spectrogram'
+eegdir = 'data/nmed-t/eeg_spect_25'
 meldir = 'data/nmed-t/mel_spectrogram'
-trainA = 'data/nmed-t-prep/A/train'
-valA = 'data/nmed-t-prep/A/val'
-testA = 'data/nmed-t-prep/A/test'
-trainB = 'data/nmed-t-prep/B/train'
-valB = 'data/nmed-t-prep/B/val'
-testB = 'data/nmed-t-prep/B/test'
+trainA = 'data/nmed-t-25/trainA'
+valA = 'data/nmed-t-25/valA'
+testA = 'data/nmed-t-25/testA'
+trainB = 'data/nmed-t-25/trainB'
+valB = 'data/nmed-t-25/valB'
+testB = 'data/nmed-t-25/testB'
 
 tr = 0.8
 ts = 0.1

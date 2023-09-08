@@ -1,13 +1,17 @@
+'''
+Run to compute MCD metric and compute waveform. Change directory below
+'''
+
 import librosa
 from pymcd.mcd import Calculate_MCD
 import os
 from pathlib import Path
 import matplotlib.pyplot as plt
 
-dir_real = 'results/audio/cnn/real/'
-dir_fake = 'results/audio/cnn/fake/'
-dst_real = 'results/eval/cnn/waveform/real/'
-dst_fake = 'results/eval/cnn/waveform/fake/'
+dir_real = 'results/audio/cgan-25/real/'
+dir_fake = 'results/audio/cgan-25/fake/'
+dst_real = 'results/eval/cgan-25/waveform/real/'
+dst_fake = 'results/eval/cgan-25/waveform/fake/'
 
 mcd_dict = {}
 
@@ -31,6 +35,7 @@ print(mcd_dict)
     
 for dir in os.listdir(dir_real):
     d = os.path.join(dir_real, dir)
+    dst = os.path.join(dst_real, dir)
     for f in os.listdir(d):
         n = Path(f).stem
         y, sr = librosa.load(d+'/'+f)
@@ -38,11 +43,12 @@ for dir in os.listdir(dir_real):
         librosa.display.waveshow(y, sr=sr, ax=ax)
         ax.set(title=n)
         ax.label_outer()
-        fig.savefig(d+'/'+n+'.png')
+        fig.savefig(dst+'/'+n+'.png')
         plt.close()
 
-for dir in os.listdir(dir_real):
-    d = os.path.join(dir_real, dir)
+for dir in os.listdir(dir_fake):
+    d = os.path.join(dir_fake, dir)
+    dst = os.path.join(dst_fake, dir)
     for f in os.listdir(d):
         n = Path(f).stem
         y, sr = librosa.load(d+'/'+f)
@@ -50,5 +56,5 @@ for dir in os.listdir(dir_real):
         librosa.display.waveshow(y, sr=sr, ax=ax)
         ax.set(title=n)
         ax.label_outer()
-        fig.savefig(d+'/'+n+'.png')
+        fig.savefig(dst+'/'+n+'.png')
         plt.close()

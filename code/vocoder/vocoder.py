@@ -1,3 +1,7 @@
+'''
+Run to convert mel-spectrogram to wav file
+'''
+
 import librosa
 import soundfile as sf
 import numpy as np
@@ -7,9 +11,9 @@ import os
 from pathlib import Path
 from pymcd.mcd import Calculate_MCD
 
-dir = 'cnn_res/'
-dst_real = 'results/audio/cnn/real/'
-dst_fake = 'results/audio/cnn/fake/'
+dir = 'cgan_25/'
+dst_real = 'results/audio/cgan-25/real/'
+dst_fake = 'results/audio/cgan-25/fake/'
 
 for d in os.listdir(dir):
     print(d)

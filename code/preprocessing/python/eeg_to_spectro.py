@@ -8,7 +8,7 @@ from PIL import Image
 import pathlib
 
 dir = 'data/nmed-t/eeg/'
-dst = 'data/nmed-t/eeg_spectrogram/'
+dst = 'data/nmed-t/eeg_spect_25/'
 
 def read_mat(filename):
     mat = sio.loadmat(dir+filename)
@@ -25,7 +25,7 @@ for fname in os.listdir(dir):
         for i in range(eeg.shape[2]):
             print('stim' + str(n) + '_sub' + str(i))
             sub = eeg[:,:,i]
-            for j in range(0, sub.shape[1], 125):
+            for j in range(25, sub.shape[1], 125):
                 if int(n) > 0:
                     name = dst + 'stim0' + n + '_sub' + str(i) + '_' + str(int(j/125)) + '.tiff'
                 else:
