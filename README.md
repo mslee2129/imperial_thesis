@@ -26,4 +26,4 @@ Set
 ```
 to traing with label smoothing
 ## Citation
-The code for the GANs have been largely inspired from 
+The code for the GANs has been largely inspired from the original [pix2pix/cycleGAN paper](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix).
