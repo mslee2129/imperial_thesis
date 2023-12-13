@@ -1,7 +1,7 @@
 # Imperial Thesis
 
 ## About
-This is a GitHub repository for my Individual Project for the MSc Computing degree at Imperial College London. This project attempts to reconstruct musical stimuli from EEG signals using generative models. The report can be accessed here [here](MSc Thesis.pdf).
+This is a GitHub repository for my Individual Project for the MSc Computing degree at Imperial College London. This project attempts to reconstruct musical stimuli from EEG signals using generative models. The report can be accessed here [here](https://github.com/mslee2129/imperial_thesis/blob/08e552f0f01b604d3321550a8b1bc9673098d59a/MSc%20Thesis.pdf).
 
 ## Dataset
 The dataset used for training can be found [here](https://exhibits.stanford.edu/data/catalog/jn859kj8079) (NMED-T) and [here](https://openneuro.org/datasets/ds002721/versions/1.0.2) (Film Music).
